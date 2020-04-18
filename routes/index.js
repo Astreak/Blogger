@@ -95,7 +95,7 @@ app.post("/ano",(req,res,next)=>{
         if(d){
           console.log(d);
           d.posts.push({
-            Posts:req.body.Text
+            P:req.body.Text
           });
           d.save()
           .then((d)=>{

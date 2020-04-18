@@ -23,7 +23,9 @@ var hola=new Schema({
         unique:false
 
     },
-    posts:[Post];
+    posts:[{
+      P:String
+    }]
 },{
         timestamp:true
 });
