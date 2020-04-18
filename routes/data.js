@@ -25,6 +25,12 @@ var hola=new Schema({
     },
     posts:[{
       P:String
+    }],
+    follwers:[{
+      N:String
+    }],
+    follwed:[{
+      N:String
     }]
 },{
         timestamp:true

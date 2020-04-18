@@ -31,8 +31,9 @@ app.get("/",(req,res,next)=>{
   else{
     res.render("index");
   }
-
 });
+
+
 app.get("/register",(req,res,next)=>{
   res.render("register");
 });
@@ -67,6 +68,8 @@ app.get("/info",(req,res,next)=>{
 app.post("/Post",(req,res,next)=>{
   req.session.prj=req.body.Email;
   req.session.OUTH=req.body.pass;
+  if(req.session.prj){
+
   console.log(req.session);
   if(req.session.prj){
     res.redirect("/post");
@@ -74,11 +77,19 @@ app.post("/Post",(req,res,next)=>{
   else{
     res.send("Not authorized");
   }
-
+}
+else{
+  res.redirect("/login");
+}
 });
 app.get("/post",(req,res,next)=>{
-
-  res.render("post");
+  if(!req.session.prj){
+    console.log("User Not authorized");
+    res.redirect("/login");
+  }
+  else{
+    res.render("post");
+  }
 });
 app.post("/ano",(req,res,next)=>{
   console.log(req.session.prj);
@@ -112,6 +123,54 @@ app.post("/ano",(req,res,next)=>{
   });
   // res.redirect("/info");
 });
+app.get("/follow",(req,res,next)=>{
+  if(req.session.prj){
+
+    res.render("follow");
+
+
+}
+else{
+  res.redirect("/login");
+}
+});
+app.post("/follow",(req,res,next)=>{
+  if(req.session.prj){
+    db.findOne({Name:req.body.follower})
+    .then((d)=>{
+      if(d){
+        d.follwers.push({
+            N:req.session.prj
+        });
+      });
+      db.findOne({Email:req.session.Email})
+      .then((d)=>{
+        if(d){
+          d.follwed.push({
+            N:req.body.follower
+          });
+        }
+
+      })
+      d.save()
+      .then((d)=>{
+        console.log(d);
+      });
+    
+        res.send("inserted in database :)");
+      }
+      else{
+        res.send("Whom you wanna follow is not in our service");
+      }
+    });
+  }
+  else{
+    res.redirect("/login");
+  }
+});
+
+
+
 app.get("/logout",(req,res)=>{
   if(req.session){
     req.session.destroy();
@@ -119,6 +178,7 @@ app.get("/logout",(req,res)=>{
     res.redirect("/");
   }
 });
+
 
 
 
