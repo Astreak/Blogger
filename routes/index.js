@@ -21,6 +21,12 @@ app.use(session({
   saveUnInitialized:false,
   resave:false,
 }));
+app.use(session({
+  name:"Kros",
+  secret:"Aezakmi@1",
+  saveUnInitialized:false,
+  resave:false,
+}));
 
 
 app.get("/",(req,res,next)=>{
@@ -38,6 +44,7 @@ app.get("/register",(req,res,next)=>{
   res.render("register");
 });
 app.post("/login",(req,res,next)=>{
+  if(req.session.prj){
   db.findOne({Name:req.body.name})
     .then((d)=>{
       if(d!=null){
@@ -57,17 +64,32 @@ app.post("/login",(req,res,next)=>{
       console.log("User is registered");
     });
   res.redirect("/login");
+}
+else{
+  res.redirect("/login");
+}
 });
 app.get("/login",(req,res,next)=>{
   console.log(req.session.prj);
   res.render("login");
 });
 app.get("/info",(req,res,next)=>{
+  console.log(req.session);
   res.render("info");
 });
 app.post("/Post",(req,res,next)=>{
   req.session.prj=req.body.Email;
   req.session.OUTH=req.body.pass;
+  db.findOne({Email:req.session.prj})
+  .then((d)=>{
+    if(d){
+      req.session.Kros=d.Name;
+    }
+    else{
+      console.log("Error in getting name");
+    }
+
+  });
   if(req.session.prj){
 
   console.log(req.session);
@@ -92,13 +114,13 @@ app.get("/post",(req,res,next)=>{
   }
 });
 app.post("/ano",(req,res,next)=>{
-  console.log(req.session.prj);
   db.findOne({Email:req.session.prj})
   .then((d)=>{
     if(!d){
 
       console.log("User not registered");
       res.redirect("/register");
+      res.send("Unauthorized");
     }
     else{
       db.findOne({Email:req.session.prj,Password:req.session.OUTH})
@@ -112,11 +134,13 @@ app.post("/ano",(req,res,next)=>{
           .then((d)=>{
             console.log(d);
           });
+
           res.send("ok");
         }
         else{
           console.log("Wrong password");
           res.redirect("/post");
+          res.send("Wrong password");
         }
       });
     }
@@ -134,6 +158,79 @@ else{
   res.redirect("/login");
 }
 });
+app.get("/blog",(req,res,next)=>{
+  var a=[];
+  if(req.session.prj){
+    db.findOne({Email:req.session.prj})
+    .then((d)=>{
+      if(d){
+        d.posts.forEach((p,i)=>{
+          a.push(p.P);
+        });
+        res.render("show",{arr:a});
+
+      }
+      else{
+        res.redirect("User not found");
+      }
+
+    });
+
+  }
+  else{
+    res.redirect("/login");
+  }
+});
+app.get("/message",(req,res,next)=>{
+  if(req.session.prj){
+  res.render("message")
+}
+else{
+  res.redirect("/login");
+}
+});
+app.post("/message",(req,res,next)=>{
+  var name;
+  if(req.session.prj){
+    db.findOne({Email:req.session.prj})
+    .then((d)=>{
+      if(d){
+        name=d.Name;
+      }
+      else{
+        console.log("Session name found");
+      }
+    });
+    db.findOne({Name:req.body.person})
+    .then((d)=>{
+      if(d){
+        console.log("Person found")
+        d.message.push({
+            N:name,
+            M:req.body.msg
+        });
+        d.save()
+        .then((d)=>{
+          console.log(d);
+        });
+      }
+      else{
+        res.send("User not found");
+      }
+    });
+  }
+  else{
+    res.redirect("/login");
+  }
+});
+
+
+
+
+
+
+
+
 app.post("/follow",(req,res,next)=>{
   if(req.session.prj){
     db.findOne({Name:req.body.follower})
@@ -142,7 +239,7 @@ app.post("/follow",(req,res,next)=>{
         d.follwers.push({
             N:req.session.prj
         });
-      });
+
       db.findOne({Email:req.session.Email})
       .then((d)=>{
         if(d){
@@ -151,12 +248,15 @@ app.post("/follow",(req,res,next)=>{
           });
         }
 
+
+
       })
       d.save()
       .then((d)=>{
         console.log(d);
       });
-    
+
+
         res.send("inserted in database :)");
       }
       else{

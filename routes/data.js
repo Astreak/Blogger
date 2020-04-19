@@ -29,8 +29,9 @@ var hola=new Schema({
     follwers:[{
       N:String
     }],
-    follwed:[{
-      N:String
+    message:[{
+      N:String,
+      M:String
     }]
 },{
         timestamp:true

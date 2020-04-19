@@ -2,25 +2,46 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>Blog</title>
+    <title>blog</title>
   </head>
+  <style>
+    body{
+      background-color:azure;
 
-  <body bgcolor="azure">
+    }
+    #ok{
+      color:darkslategrey;
+      font-size: 34px;
+      font-family: cursive;
+    }
+    h1{
+      color:azure;
+      font-size: 40px;
+      background-color: black;
+      text-align: center;
+      font-family: cursive;
+    }
+  </style>
+  <body>
+    <h1><center>
+      My blogs
+    </center></h1>
+    <hr /><br />
     <center>
+      <ul id="ok">
+        <% for(var i of arr) {%>
+          <li>
+            <%= i %>
+            <hr />
+          </li>
+        <% } %>
+
+      </ul>
 
 
-    <div class="id">
-      <h1>Your Inbox</h1>
-
-    </div>
-    <ul >
 
 
-    <% for i of a { %>
-      <li>
-        <%=i %>
-      </li>
-    <% }%>
+    </center>
 
-      </center>
+  </body>
 </html>
