@@ -11,19 +11,19 @@ connect.then(()=>{
 });
 app.use(session({
   name:"prj",
-  secret:"Aezakmi@1",
+  secret:"*****",
   saveUnInitialized:false,
   resave:false,
 }));
 app.use(session({
   name:"OUTH",
-  secret:"Aezakmi@1",
+  secret:"****",
   saveUnInitialized:false,
   resave:false,
 }));
 app.use(session({
   name:"Kros",
-  secret:"Aezakmi@1",
+  secret:"****",
   saveUnInitialized:false,
   resave:false,
 }));
