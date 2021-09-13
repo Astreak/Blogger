@@ -7,7 +7,7 @@ var options={
     url:"http://newsapi.org/v2/top-headlines",
     qs:{
         sources:"google-news",
-        apiKey:"fc45069dea544fe18c52c4676e751f07"
+        apiKey:"**********************"
      }
 
 };
